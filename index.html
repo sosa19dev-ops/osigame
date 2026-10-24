@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSIGAME - Juego de acción en Godot</title>
+<meta name="description" content="OSIGAME: juego de acción con vista desde arriba hecho en Godot por estudiantes de 7°2. Versión beta 0.1 para Windows. Descargalo gratis.">
+<link rel="canonical" href="https://sosa19dev-ops.github.io/osigame/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OSIGAME">
+<meta property="og:description" content="Juego totalmente fácil (no apto para recién nacidos). Versión beta 0.1 para Windows.">
+<meta property="og:url" content="https://sosa19dev-ops.github.io/osigame/">
+<meta property="og:image" content="https://sosa19dev-ops.github.io/osigame/img/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="img/favicon.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --fondo:#14163a; --panel:#1f2358; --linea:#3a3f8f;
+    --texto:#eef0ff; --suave:#b4b8e6; --acento:#ff4f8b; --amarillo:#ffd23f;
+    --pixel:'Press Start 2P','Courier New',monospace;
+    --cuerpo:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:70px}
+  body{margin:0;background:var(--fondo);color:var(--texto);font-family:var(--cuerpo);font-size:18px;line-height:1.65}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+
+  /* MENÚ */
+  nav{position:sticky;top:0;z-index:10;background:var(--fondo);border-bottom:4px solid var(--linea)}
+  nav .wrap{display:flex;flex-wrap:wrap;gap:4px 18px;align-items:center;padding-top:10px;padding-bottom:10px}
+  nav img{width:32px;height:32px;margin-right:auto}
+  nav a{font-size:15px;text-decoration:none;color:var(--suave);padding:4px 2px}
+  nav a:hover{color:var(--amarillo)}
+
+  /* TÍTULO */
+  .hero{padding:80px 0 64px;border-bottom:4px solid var(--linea);text-align:center}
+  .hero h1{font-family:var(--pixel);font-weight:400;color:#fff;font-size:clamp(28px,8vw,64px);line-height:1.1;margin:0 0 28px;
+    text-shadow:4px 4px 0 #2a2f7a,8px 8px 0 #0a0b24;letter-spacing:2px;word-break:break-word}
+  .lema{max-width:46ch;color:var(--suave);margin:0 auto 32px}
+
+  .boton{display:inline-block;font-family:var(--pixel);font-size:14px;text-decoration:none;color:#1a1200;background:var(--amarillo);
+    padding:18px 24px;border:0;cursor:pointer;box-shadow:6px 6px 0 #8a6d00;transition:transform .08s,box-shadow .08s}
+  .boton:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 #8a6d00}
+  .boton:active{transform:translate(6px,6px);box-shadow:0 0 0 #8a6d00}
+
+  /* SECCIONES */
+  section{padding:56px 0;border-bottom:4px solid var(--linea)}
+  h2{font-family:var(--pixel);font-weight:400;font-size:clamp(16px,3.5vw,22px);line-height:1.4;margin:0 0 24px;color:var(--amarillo)}
+  h3{font-family:var(--pixel);font-weight:400;font-size:14px;line-height:1.5;margin:0 0 12px}
+
+  /* CAPTURAS */
+  .galeria{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .captura{position:relative;aspect-ratio:9/16;margin:0;background:var(--panel);border:3px solid var(--linea);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;color:var(--suave);font-family:var(--pixel);font-size:10px;text-align:center;padding:12px}
+  .captura img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+  /* DESCARGA */
+  .descarga-caja{background:var(--panel);border:3px solid var(--linea);padding:28px;max-width:62ch}
+  .descarga-caja p{margin:0 0 20px}
+  .datos{margin:28px 0 0;padding:0;list-style:none;border-top:2px solid var(--linea)}
+  .datos li{display:flex;flex-wrap:wrap;gap:4px 12px;padding:10px 0;border-bottom:2px solid var(--linea);font-size:16px}
+  .datos b{font-weight:600;min-width:11ch}
+  .datos span{color:var(--suave)}
+  .aclaracion{max-width:62ch;margin-top:32px;color:var(--suave);font-size:16px}
+  .aclaracion h3{color:var(--texto)}
+  .aclaracion p{margin:0 0 .9em}
+
+  /* PAGAME */
+  .linea{border:0;border-top:4px solid var(--linea);margin:40px 0 0}
+  .apoyo{margin-top:40px;max-width:62ch}
+  .apoyo h3{color:var(--acento);font-size:18px}
+  .apoyo p{margin:0 0 1em}
+  .alias{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:16px}
+  .alias code{font-family:'Courier New',monospace;font-size:20px;background:var(--panel);border:2px dashed var(--linea);padding:8px 14px}
+  .alias button{font-family:var(--pixel);font-size:10px;color:var(--texto);background:transparent;border:2px solid var(--acento);padding:12px 14px;cursor:pointer}
+  .alias button:hover{background:var(--acento);color:#fff}
+  .titular{margin:16px 0 0}
+
+  /* CONTACTO Y CREADORES */
+  .creadores{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+  .creador{position:relative;overflow:hidden;background:var(--panel);border:3px solid var(--linea);padding:16px}
+  /* línea de luz que recorre cada caja */
+  .creador::after{content:"";position:absolute;top:-10%;bottom:-10%;left:-25%;width:14%;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--luz),transparent);filter:blur(2px);opacity:.75;transform:skewX(-18deg);
+    animation:luz 4.5s ease-in-out infinite;animation-delay:var(--retardo,0s)}
+  @keyframes luz{0%{left:-25%}60%,100%{left:125%}}
+  .azul{--luz:#4da3ff}
+  .morado{--luz:#b57bff;--retardo:.9s}
+  .naranja{--luz:#ff9a3c;--retardo:1.8s}
+  .enlaces{display:flex;justify-content:space-between;gap:8px;margin-bottom:16px}
+  .enlaces a{font-size:15px;text-decoration:none;background:var(--fondo);border:2px solid var(--linea);padding:8px 12px}
+  .enlaces a:hover{border-color:var(--amarillo);color:var(--amarillo)}
+  .foto{position:relative;aspect-ratio:1/1;margin:0 0 12px;background:var(--fondo);border:3px solid var(--linea);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;color:var(--suave);font-family:var(--pixel);font-size:10px}
+  .foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+  .creador h3{margin:0;font-size:12px;text-align:center}
+  .rol{margin:6px 0 0;text-align:center;font-size:14px;color:var(--suave)}
+  .agradecimientos{margin:48px 0 20px;color:var(--texto)}
+  .gracias{margin:0 0 20px;color:var(--suave)}
+
+  /* CRÉDITOS */
+  #creditos p{margin:0;max-width:62ch;color:var(--suave)}
+  #creditos .datos{margin-top:20px;max-width:62ch}
+  #creditos .datos b{min-width:16ch}
+  #creditos a{color:var(--texto)}
+  #creditos a:hover{color:var(--amarillo)}
+
+  footer{padding:32px 0 48px;color:var(--suave);font-size:15px;text-align:center}
+  footer p{margin:0 0 4px}
+  @media (prefers-reduced-motion:reduce){.creador::after{animation:none;display:none}
+  *{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<nav aria-label="Menú principal">
+  <div class="wrap">
+    <img src="img/favicon.png" alt="OSIGAME">
+    <a href="#capturas">Capturas</a>
+    <a href="#descarga">Descargar</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#creditos">Créditos</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>OSIGAME</h1>
+    <p class="lema">Juego totalmente fácil<br>(no apto para recién nacidos)</p>
+    <a class="boton" href="#descarga">Ir a descargar</a>
+  </div>
+</header>
+
+<main>
+  <!-- CAPTURAS: poné tus fotos (verticales) en la carpeta img como captura1.png, captura2.png y captura3.png -->
+  <section id="capturas">
+    <div class="wrap">
+      <h2>Fotos que te dan ganas de jugar</h2>
+      <div class="galeria">
+        <figure class="captura">Captura 1<img src="img/captura1.png" alt="Captura de OSIGAME 1" onerror="this.remove()"></figure>
+        <figure class="captura">Captura 2<img src="img/captura2.png" alt="Captura de OSIGAME 2" onerror="this.remove()"></figure>
+        <figure class="captura">Captura 3<img src="img/captura3.png" alt="Captura de OSIGAME 3" onerror="this.remove()"></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESCARGA -->
+  <section id="descarga">
+    <div class="wrap">
+      <h2>Descargar</h2>
+      <div class="descarga-caja">
+        <!-- Reemplazá el href por el link real del juego (GitHub Releases, itch.io, Drive, etc.) -->
+        <a class="boton" href="https://github.com/sosa19dev-ops/osigame/releases/download/beta-0.1/OSIGAME-beta-0.1.zip" download>Descargar OSIGAME</a>
+        <ul class="datos">
+          <li><b>Versión</b><span>Beta 0.1</span></li>
+          <li><b>Sistema operativo</b><span>Windows 10 (probado y aprobado)</span></li>
+        </ul>
+      </div>
+
+      <div class="aclaracion">
+        <h3>Aclaración</h3>
+        <p>OSIGAME es un juego hecho por nosotros y es una versión beta/no terminada. Hicimos esto por amor al arte y para la muestra.</p>
+        <p>Intenten disfrutarlo: la idea es divertirse, así que si se aburren pueden borrarlo.</p>
+      </div>
+
+      <hr class="linea">
+
+      <div class="apoyo">
+        <h3>Donación</h3>
+        <p>OSIGAME fue hecho a base de puro sudor y lágrimas, con ideas y conceptos totalmente originales. Utilizamos lo que aprendimos en estos años de colegio y, con ayuda de la IA, pudimos sacar este proyecto adelante.</p>
+        <p>Te agradeceríamos muchísimo tu colaboración para poder financiar futuros proyectos y estudios.</p>
+        <p>7°2 no juzga, aceptamos cualquier monto. (Yo acepto hasta centavos.)</p>
+        <div class="alias">
+          <code id="alias">nicolas.sossa</code>
+          <button type="button" id="copiar">Copiar alias</button>
+        </div>
+        <p class="titular">A nombre de: <strong>Nicolas Agustin Sosa Candia</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO Y CREADOR -->
+  <section id="contacto">
+    <div class="wrap">
+      <h2>Contacto y creadores</h2>
+      <!-- Cada botón abre directo la página correspondiente. Fotos en img/nicolas.png, img/kiara.png e img/brian.png -->
+      <div class="creadores">
+        <article class="creador azul">
+          <div class="enlaces">
+            <a href="mailto:sosa19dev@gmail.com" data-mail="sosa19dev@gmail.com">Gmail</a>
+            <a href="https://instagram.com/sosak.19" target="_blank" rel="noopener">Instagram</a>
+          </div>
+          <figure class="foto">Foto<img src="img/nicolas.png" alt="Foto de Nicolas Sosa" onerror="this.remove()"></figure>
+          <h3>Nicolas Sosa</h3>
+          <p class="rol">Creador</p>
+        </article>
+        <article class="creador morado">
+          <div class="enlaces">
+            <a href="mailto:romero.kia44@gmail.com" data-mail="romero.kia44@gmail.com">Gmail</a>
+            <a href="https://instagram.com/r_kiaraaa" target="_blank" rel="noopener">Instagram</a>
+          </div>
+          <figure class="foto">Foto<img src="img/kiara.png" alt="Foto de Kiara Romero" onerror="this.remove()"></figure>
+          <h3>Kiara Romero</h3>
+          <p class="rol">Creadora</p>
+        </article>
+      </div>
+      <h3 class="agradecimientos">Apoyo moral</h3>
+      <div class="creadores">
+        <article class="creador naranja">
+          <div class="enlaces">
+            <a href="mailto:merolbrian@gmail.com" data-mail="merolbrian@gmail.com">Gmail</a>
+            <a href="https://instagram.com/2sekas" target="_blank" rel="noopener">Instagram</a>
+          </div>
+          <figure class="foto">Foto<img src="img/brian.png" alt="Foto de Brian Merola" onerror="this.remove()"></figure>
+          <h3>Brian Merola</h3>
+          <p class="rol">Apoyo moral</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRÉDITOS Y AGRADECIMIENTOS -->
+  <section id="creditos">
+    <div class="wrap">
+      <h2>Créditos y agradecimientos</h2>
+      <p>Gracias a estas herramientas y a sus creadores por hacer posible OSIGAME.</p>
+      <ul class="datos">
+        <li><b>Con ayuda de IA</b><span><a href="https://www.anthropic.com" target="_blank" rel="noopener">Claude (Anthropic)</a> y <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT (OpenAI)</a></span></li>
+        <li><b>Dibujos</b><span><a href="https://www.pixellab.ai" target="_blank" rel="noopener">Pixelab</a> y <a href="https://libresprite.github.io" target="_blank" rel="noopener">LibreSprite</a></span></li>
+        <li><b>Sonidos</b><span><a href="https://www.image-line.com/fl-studio" target="_blank" rel="noopener">FL Studio 25</a></span></li>
+        <li><b>Motor del juego</b><span><a href="https://godotengine.org" target="_blank" rel="noopener">Godot Engine</a></span></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>OSIGAME - Hecho para todo el mundo.</p>
+    <p>¡Nos vemos la próxima!!</p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('copiar').addEventListener('click', function(){
+    var btn = this, alias = document.getElementById('alias').textContent;
+    var listo = function(){ btn.textContent = '¡Copiado!'; setTimeout(function(){ btn.textContent = 'Copiar alias'; }, 1500); };
+    if (navigator.clipboard) { navigator.clipboard.writeText(alias).then(listo); }
+    else { var t = document.createElement('textarea'); t.value = alias; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); listo(); }
+  });
+
+  /* Gmail: en el celular abre la app de mail (mailto); en la compu abre la redacción de Gmail en una pestaña nueva */
+  document.querySelectorAll('a[data-mail]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      if (!/Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)) {
+        e.preventDefault();
+        window.open('https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(a.dataset.mail), '_blank', 'noopener');
+      }
+    });
+  });
+</script>
+</body>
+</html>

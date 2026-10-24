@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sosa19dev-ops.github.io/osigame/sitemap.xml
